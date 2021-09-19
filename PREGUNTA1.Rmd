@@ -1,0 +1,133 @@
+---
+title: "PC1"
+author: "Isabella Farromeque"
+date: "18/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+--------------
+
+pregunta1: ".sav" (en github)
+
+
+BASE DE DATOS
+- A través de "web scraping"
+```{r}
+library(htmltab)
+library(stringr)
+```
+
+1. Web Scraping con "htmltab"
+
+Base de datos - Países por porcentaje de pobreza en Latinoamérica
+```{r}
+link = "https://es.wikipedia.org/wiki/Anexo:Pa%C3%ADses_por_porcentaje_de_pobreza_en_Latinoam%C3%A9rica"
+path = "/html/body/div[3]/div[3]/div[5]/div[1]/table"
+data1 = htmltab(link, path)
+head(data1)
+```
+```{r}
+names(data1)<-c("pais", "desarrollo humano", "igualdad de ingreso", "canasta basica de CEPAL", "canasta basica de cada pais", "pobreza monetaria", "pobreza multidimensional", "pobreza extrema: canasta alimentaria CEPAL", "pobreza extrema: canasta alimentaria de cada pais", "pobreza extrema: pobreza monetaria")
+head(data1)
+```
+```{r}
+library(rio)
+export(data1, "pobreza.csv") 
+```
+
+2.Web Scraping con "htmltab" 
+
+Base de datos - Presidentes del Perú desde 1823 hasta 2021 y su origen/razón del cargo 
+```{r}
+link2 = "https://es.wikipedia.org/wiki/Anexo:Presidentes_del_Per%C3%BA"
+path2 = "/html/body/div[3]/div[3]/div[5]/div[1]/table[1]"
+data2 = htmltab(link2, path2)
+head(data2)
+```
+```{r}
+names(data2)<-c("presidente", "origen", "inicio del mandato", "fin del mandato", "titulo", "organizacion politica", "origen del cargo", "vicepresidente")
+head(data2)
+```
+```{r}
+export(data2, "presidentesper.csv") 
+```
+
+3. Web Scraping con "rvest"
+
+Base de Datos - Congresistas electos para el 2021 hasta el 2026 en Perú
+```{r}
+library(rvest)
+url="https://www.congreso.gob.pe/pleno/congresistas/"
+pagina_web=read_html(url)
+```
+```{r}
+css_name="a.conginfo"
+name_html <- html_nodes(pagina_web,css_name)
+name_texto <- html_text(name_html)
+head(name_texto)
+```
+```{r}
+css_party="span.partidolist"
+party_html <- html_nodes(pagina_web,css_party)
+party_texto <- html_text(party_html)
+head(party_texto)
+```
+```{r}
+data3 <- data.frame(NOMBRE = name_texto, PARTIDO = party_texto)
+head(data3)
+```
+```{r}
+export(data3, "congresistaspe.csv") 
+```
+
+
+4. Base de Datos - Organizaciones No Gubernamentales de Desarrollo (ONGD)
+
+```{r}
+lkXLSX="~/estadistica 2/PC1/Base de Datos ONGD - I Semestre 2021.xlsx"
+dataExcel=import(lkXLSX)
+head(dataExcel)
+```
+```{r}
+ONGD= data.frame(dataExcel)
+ONGD
+```
+```{r}
+export(ONGD, "ONGD.csv") 
+```
+
+
+
+
+
+
+
+
+
+
+
+
